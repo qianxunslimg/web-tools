@@ -8,7 +8,7 @@ function normalizePath(pathname: string) {
 function buildBaseRoute(path: string, canonicalPath: string): RouteState {
   return {
     page: "home",
-    toolkitTab: "banyiping",
+    toolkitTab: "image-editor",
     opsTab: "features",
     blogMode: "index",
     blogTag: null,
@@ -54,7 +54,7 @@ export function buildPagePath(page: PageKey) {
     case "blog":
       return buildBlogPath();
     case "toolkit":
-      return buildToolkitPath("banyiping");
+      return buildToolkitPath("image-editor");
     case "ops":
       return buildOpsPath("features");
     default:
@@ -148,9 +148,15 @@ export function parseRoute(pathname: string): RouteState {
       };
     case "/toolkit":
       return {
-        ...buildBaseRoute(path, buildToolkitPath("banyiping")),
+        ...buildBaseRoute(path, buildToolkitPath("image-editor")),
         page: "toolkit",
-        toolkitTab: "banyiping",
+        toolkitTab: "image-editor",
+      };
+    case "/toolkit/image-editor":
+      return {
+        ...buildBaseRoute(path, buildToolkitPath("image-editor")),
+        page: "toolkit",
+        toolkitTab: "image-editor",
       };
     case "/toolkit/banyiping":
       return {

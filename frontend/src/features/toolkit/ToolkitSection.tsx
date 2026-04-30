@@ -9,6 +9,7 @@ import type {
   StudentAnalysisItem,
 } from "../../api/types";
 import type { ToolkitTabKey } from "../../app/types";
+import { ImageEditorTool } from "./ImageEditorTool";
 
 const defaultExcelUrl = "";
 
@@ -102,6 +103,10 @@ export function ToolkitSection({ activeTab }: ToolkitSectionProps) {
         ) : null}
       </Card>
     );
+  }
+
+  if (activeTab === "image-editor") {
+    return <ImageEditorTool />;
   }
 
   return (

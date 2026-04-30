@@ -17,6 +17,7 @@ export const NAV_ITEMS: NavItem[] = [
 ];
 
 export const TOOLKIT_TABS: SubNavItem<ToolkitTabKey>[] = [
+  { key: "image-editor", label: "图片编辑", path: buildToolkitPath("image-editor") },
   { key: "banyiping", label: "BYP", path: buildToolkitPath("banyiping") },
 ];
 
@@ -32,6 +33,12 @@ export const OVERVIEW_ITEMS = [
     title: "个人博客",
     description: "统一托管文章、分类、标签和本地图片资源。",
     path: buildPagePath("blog"),
+  },
+  {
+    label: "Image",
+    title: "图片编辑器",
+    description: "改尺寸、压缩体积、旋转翻转并导出证件照。",
+    path: buildToolkitPath("image-editor"),
   },
   {
     label: "BYP",

@@ -56,7 +56,12 @@ export default function App() {
     const titleMap = {
       home: SITE_NAME,
       blog: `博客 | ${SITE_NAME}`,
-      toolkit: route.toolkitTab === "banyiping" ? `BYP | ${SITE_NAME}` : `工具 | ${SITE_NAME}`,
+      toolkit:
+        route.toolkitTab === "image-editor"
+          ? `图片编辑 | ${SITE_NAME}`
+          : route.toolkitTab === "banyiping"
+            ? `BYP | ${SITE_NAME}`
+            : `工具 | ${SITE_NAME}`,
       ops:
         route.opsTab === "logs"
           ? `日志 | ${SITE_NAME}`
