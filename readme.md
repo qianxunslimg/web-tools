@@ -76,7 +76,7 @@ docker compose up --build
 
 默认地址：
 
-- MySQL：`localhost:3306`
+- MySQL：`localhost:4306`
 - 后端：`http://localhost:9000`
 - 文档：`http://localhost:9000/docs`
 - 前端：`http://localhost:9001`

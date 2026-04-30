@@ -10,21 +10,23 @@ import { OpsPage } from "./features/ops/OpsPage";
 import { ToolkitPage } from "./features/toolkit/ToolkitPage";
 
 const antdTheme = {
-  algorithm: theme.darkAlgorithm,
+  algorithm: theme.defaultAlgorithm,
   token: {
-    colorPrimary: "#38bdf8",
-    colorInfo: "#38bdf8",
-    colorSuccess: "#22c55e",
-    colorWarning: "#f59e0b",
-    colorError: "#ef4444",
-    colorBgBase: "#0f172a",
-    colorBgContainer: "#1e293b",
-    colorBgElevated: "#111827",
-    colorText: "#e2e8f0",
-    colorTextSecondary: "#94a3b8",
-    colorBorder: "#334155",
-    borderRadius: 10,
-    fontFamily: '"Inter", "Segoe UI", system-ui, -apple-system, sans-serif',
+    colorPrimary: "#19c8b9",
+    colorInfo: "#19c8b9",
+    colorSuccess: "#6fba2c",
+    colorWarning: "#f5c31c",
+    colorError: "#e05a5a",
+    colorBgBase: "#f8f8f0",
+    colorBgContainer: "rgb(247, 243, 223)",
+    colorBgElevated: "#fffaf0",
+    colorText: "#725d42",
+    colorTextSecondary: "#9f927d",
+    colorBorder: "#c4b89e",
+    borderRadius: 20,
+    controlHeight: 45,
+    fontFamily:
+      '"Nunito", "Noto Sans SC", "Zen Maru Gothic", "PingFang SC", "Hiragino Sans GB", system-ui, sans-serif',
   },
 };
 
