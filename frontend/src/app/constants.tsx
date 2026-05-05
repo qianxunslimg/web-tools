@@ -18,6 +18,17 @@ export const NAV_ITEMS: NavItem[] = [
 
 export const TOOLKIT_TABS: SubNavItem<ToolkitTabKey>[] = [
   { key: "image-editor", label: "图片编辑", path: buildToolkitPath("image-editor") },
+  { key: "time", label: "时间转换", path: buildToolkitPath("time") },
+  { key: "horoscope", label: "星座生日", path: buildToolkitPath("horoscope") },
+  { key: "almanac", label: "传统黄历", path: buildToolkitPath("almanac") },
+  { key: "regex", label: "正则测试", path: buildToolkitPath("regex") },
+  { key: "unit", label: "单位换算", path: buildToolkitPath("unit") },
+  { key: "life", label: "人生进度", path: buildToolkitPath("life") },
+  { key: "qr", label: "二维码", path: buildToolkitPath("qr") },
+  { key: "pdf", label: "PDF", path: buildToolkitPath("pdf") },
+  { key: "codec", label: "编码", path: buildToolkitPath("codec") },
+  { key: "color", label: "颜色", path: buildToolkitPath("color") },
+  { key: "text", label: "文本整理", path: buildToolkitPath("text") },
   { key: "banyiping", label: "BYP", path: buildToolkitPath("banyiping") },
 ];
 
@@ -41,10 +52,10 @@ export const OVERVIEW_ITEMS = [
     path: buildToolkitPath("image-editor"),
   },
   {
-    label: "BYP",
-    title: "班易评分析",
-    description: "Excel 链接分析工具入口。",
-    path: buildToolkitPath("banyiping"),
+    label: "Tools",
+    title: "效率工具箱",
+    description: "生日、星座、黄历、正则、单位换算和文本整理工具。",
+    path: buildToolkitPath("horoscope"),
   },
   {
     label: "Console",

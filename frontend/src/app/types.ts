@@ -1,7 +1,20 @@
 import type { ReactNode } from "react";
 
 export type PageKey = "home" | "blog" | "toolkit" | "ops";
-export type ToolkitTabKey = "image-editor" | "banyiping";
+export type ToolkitTabKey =
+  | "image-editor"
+  | "time"
+  | "horoscope"
+  | "almanac"
+  | "regex"
+  | "unit"
+  | "life"
+  | "qr"
+  | "pdf"
+  | "codec"
+  | "color"
+  | "text"
+  | "banyiping";
 export type OpsTabKey = "features" | "logs" | "table";
 export type BlogMode = "index" | "tag" | "category" | "post";
 

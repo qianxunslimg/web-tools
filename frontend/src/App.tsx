@@ -30,6 +30,22 @@ const antdTheme = {
   },
 };
 
+const toolkitTitleMap: Record<RouteState["toolkitTab"], string> = {
+  "image-editor": `图片编辑 | ${SITE_NAME}`,
+  time: `时间转换 | ${SITE_NAME}`,
+  horoscope: `星座生日 | ${SITE_NAME}`,
+  almanac: `传统黄历 | ${SITE_NAME}`,
+  regex: `正则测试 | ${SITE_NAME}`,
+  unit: `单位换算 | ${SITE_NAME}`,
+  life: `人生进度 | ${SITE_NAME}`,
+  qr: `二维码 | ${SITE_NAME}`,
+  pdf: `PDF 工具 | ${SITE_NAME}`,
+  codec: `编码工具 | ${SITE_NAME}`,
+  color: `颜色工具 | ${SITE_NAME}`,
+  text: `文本整理 | ${SITE_NAME}`,
+  banyiping: `BYP | ${SITE_NAME}`,
+};
+
 export default function App() {
   const [route, setRoute] = useState<RouteState>(() => parseRoute(window.location.pathname));
 
@@ -56,12 +72,7 @@ export default function App() {
     const titleMap = {
       home: SITE_NAME,
       blog: `博客 | ${SITE_NAME}`,
-      toolkit:
-        route.toolkitTab === "image-editor"
-          ? `图片编辑 | ${SITE_NAME}`
-          : route.toolkitTab === "banyiping"
-            ? `BYP | ${SITE_NAME}`
-            : `工具 | ${SITE_NAME}`,
+      toolkit: toolkitTitleMap[route.toolkitTab],
       ops:
         route.opsTab === "logs"
           ? `日志 | ${SITE_NAME}`

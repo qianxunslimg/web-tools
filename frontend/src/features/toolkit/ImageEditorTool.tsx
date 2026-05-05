@@ -6,7 +6,7 @@ import {
   RotateRightOutlined,
 } from "@ant-design/icons";
 import { Button, Card, Checkbox, InputNumber, Select, Slider, Space, message } from "antd";
-import { type ChangeEvent, type DragEvent, useEffect, useRef, useState } from "react";
+import { type ChangeEvent, type DragEvent, type MouseEvent, useEffect, useRef, useState } from "react";
 
 type OutputFormat = "image/jpeg" | "image/png" | "image/webp";
 type FitMode = "contain" | "cover" | "stretch";
@@ -30,6 +30,17 @@ type ExportResult = {
   quality: number;
 };
 
+type DetailPreview = {
+  visible: boolean;
+  x: number;
+  y: number;
+  bgX: number;
+  bgY: number;
+};
+
+const DETAIL_PREVIEW_WIDTH = 150;
+const DETAIL_PREVIEW_HEIGHT = 104;
+
 const FORMAT_OPTIONS: Array<{ label: string; value: OutputFormat }> = [
   { label: "JPEG", value: "image/jpeg" },
   { label: "PNG", value: "image/png" },
@@ -50,8 +61,6 @@ const SIZE_PRESETS = [
   { label: "方形头像 800x800", width: 800, height: 800 },
   { label: "网页大图 1280x720", width: 1280, height: 720 },
 ];
-
-const TARGET_SIZE_PRESETS = [50, 100, 200, 500];
 
 function formatBytes(value: number) {
   if (!Number.isFinite(value)) {
@@ -105,10 +114,17 @@ function canvasToBlob(canvas: HTMLCanvasElement, format: OutputFormat, quality: 
 
 export function ImageEditorTool() {
   const imageRef = useRef<HTMLImageElement | null>(null);
-  const previewCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const previewImageRef = useRef<HTMLImageElement | null>(null);
   const autoGenerateSeq = useRef(0);
   const [imageInfo, setImageInfo] = useState<ImageInfo | null>(null);
   const [exportResult, setExportResult] = useState<ExportResult | null>(null);
+  const [detailPreview, setDetailPreview] = useState<DetailPreview>({
+    visible: false,
+    x: 0,
+    y: 0,
+    bgX: 0,
+    bgY: 0,
+  });
   const [processing, setProcessing] = useState(false);
   const [exportStale, setExportStale] = useState(false);
   const [exportNotice, setExportNotice] = useState("");
@@ -118,7 +134,6 @@ export function ImageEditorTool() {
   const [fitMode, setFitMode] = useState<FitMode>("contain");
   const [format, setFormat] = useState<OutputFormat>("image/jpeg");
   const [quality, setQuality] = useState(82);
-  const [targetKb, setTargetKb] = useState<number | null>(200);
   const [rotation, setRotation] = useState(0);
   const [flipHorizontal, setFlipHorizontal] = useState(false);
   const [flipVertical, setFlipVertical] = useState(false);
@@ -155,7 +170,12 @@ export function ImageEditorTool() {
     if (imageInfo) {
       setExportStale(true);
       setExportNotice("");
+      hideDetailPreview();
     }
+  }
+
+  function hideDetailPreview() {
+    setDetailPreview((current) => (current.visible ? { ...current, visible: false } : current));
   }
 
   function updateWidth(value: number | null) {
@@ -238,6 +258,55 @@ export function ImageEditorTool() {
     if (file) {
       loadImageFile(file);
     }
+  }
+
+  function handlePreviewMouseMove(event: MouseEvent<HTMLLabelElement>) {
+    if (!exportResult || exportStale || processing || !previewImageRef.current) {
+      hideDetailPreview();
+      return;
+    }
+
+    const imageRect = previewImageRef.current.getBoundingClientRect();
+    const stageRect = event.currentTarget.getBoundingClientRect();
+    const imageX = event.clientX - imageRect.left;
+    const imageY = event.clientY - imageRect.top;
+
+    if (imageX < 0 || imageY < 0 || imageX > imageRect.width || imageY > imageRect.height) {
+      hideDetailPreview();
+      return;
+    }
+
+    const pointerX = event.clientX - stageRect.left;
+    const pointerY = event.clientY - stageRect.top;
+    const offset = 16;
+    const maxX = stageRect.width - DETAIL_PREVIEW_WIDTH - 8;
+    const maxY = stageRect.height - DETAIL_PREVIEW_HEIGHT - 8;
+    const preferredX =
+      pointerX + offset + DETAIL_PREVIEW_WIDTH > stageRect.width
+        ? pointerX - DETAIL_PREVIEW_WIDTH - offset
+        : pointerX + offset;
+    const preferredY =
+      pointerY + offset + DETAIL_PREVIEW_HEIGHT > stageRect.height
+        ? pointerY - DETAIL_PREVIEW_HEIGHT - offset
+        : pointerY + offset;
+    const nextX = Math.min(Math.max(preferredX, 8), Math.max(maxX, 8));
+    const nextY = Math.min(Math.max(preferredY, 8), Math.max(maxY, 8));
+    const bgX = Math.min(
+      Math.max((imageX / imageRect.width) * exportResult.width - DETAIL_PREVIEW_WIDTH / 2, 0),
+      Math.max(exportResult.width - DETAIL_PREVIEW_WIDTH, 0)
+    );
+    const bgY = Math.min(
+      Math.max((imageY / imageRect.height) * exportResult.height - DETAIL_PREVIEW_HEIGHT / 2, 0),
+      Math.max(exportResult.height - DETAIL_PREVIEW_HEIGHT, 0)
+    );
+
+    setDetailPreview({
+      visible: true,
+      x: nextX,
+      y: nextY,
+      bgX,
+      bgY,
+    });
   }
 
   function drawEditedImage(canvas: HTMLCanvasElement, targetWidth: number, targetHeight: number) {
@@ -325,41 +394,8 @@ export function ImageEditorTool() {
 
     try {
       const requestedQuality = Math.min(Math.max(quality / 100, 0.15), 0.95);
-      const targetBytes = targetKb ? targetKb * 1024 : 0;
-      let nextBlob: Blob;
-      let usedQuality = requestedQuality;
-      let nextNotice = "";
-
-      if (targetBytes > 0 && format !== "image/png") {
-        let low = 0.15;
-        let high = requestedQuality;
-        let bestBlob = await renderBlob(low);
-        let bestQuality = low;
-
-        if (bestBlob.size <= targetBytes) {
-          for (let index = 0; index < 10; index += 1) {
-            const mid = (low + high) / 2;
-            const blob = await renderBlob(mid);
-            if (blob.size <= targetBytes) {
-              bestBlob = blob;
-              bestQuality = mid;
-              low = mid;
-            } else {
-              high = mid;
-            }
-          }
-        } else {
-          nextNotice = "当前尺寸下最低质量仍然超过目标大小，可以继续降低尺寸";
-        }
-
-        nextBlob = bestBlob;
-        usedQuality = bestQuality;
-      } else {
-        nextBlob = await renderBlob(requestedQuality);
-        if (targetBytes > 0 && format === "image/png" && nextBlob.size > targetBytes) {
-          nextNotice = "PNG 不支持质量压缩；如需严格控制大小，建议导出 JPEG 或 WebP";
-        }
-      }
+      const nextBlob = await renderBlob(requestedQuality);
+      const usedQuality = format === "image/png" ? 1 : requestedQuality;
 
       if (sequence !== autoGenerateSeq.current) {
         return;
@@ -381,7 +417,7 @@ export function ImageEditorTool() {
         };
       });
       setExportStale(false);
-      setExportNotice(nextNotice);
+      setExportNotice("");
     } catch (error) {
       if (sequence === autoGenerateSeq.current) {
         message.error(error instanceof Error ? error.message : "图片处理失败");
@@ -392,36 +428,6 @@ export function ImageEditorTool() {
       }
     }
   }
-
-  useEffect(() => {
-    if (!imageInfo || !imageRef.current || !previewCanvasRef.current) {
-      return undefined;
-    }
-
-    const frame = window.requestAnimationFrame(() => {
-      if (!previewCanvasRef.current) {
-        return;
-      }
-      const scale = Math.min(1200 / outputWidth, 900 / outputHeight, 1);
-      drawEditedImage(
-        previewCanvasRef.current,
-        Math.max(1, Math.round(outputWidth * scale)),
-        Math.max(1, Math.round(outputHeight * scale))
-      );
-    });
-
-    return () => window.cancelAnimationFrame(frame);
-  }, [
-    imageInfo,
-    outputWidth,
-    outputHeight,
-    fitMode,
-    format,
-    rotation,
-    flipHorizontal,
-    flipVertical,
-    backgroundColor,
-  ]);
 
   useEffect(() => {
     if (!imageInfo || !imageRef.current) {
@@ -446,19 +452,40 @@ export function ImageEditorTool() {
     fitMode,
     format,
     quality,
-    targetKb,
     rotation,
     flipHorizontal,
     flipVertical,
     backgroundColor,
   ]);
 
-  const sizeChange =
+  const sizeChangePercent =
     imageInfo && exportResult
-      ? `${Math.round((1 - exportResult.blob.size / imageInfo.fileSize) * 100)}%`
-      : "";
+      ? Math.round((1 - exportResult.blob.size / imageInfo.fileSize) * 100)
+      : null;
+  const sizeChangeLabel =
+    sizeChangePercent === null
+      ? ""
+      : sizeChangePercent >= 0
+        ? `体积减少 ${sizeChangePercent}%`
+        : `体积增加 ${Math.abs(sizeChangePercent)}%`;
+  const sizeCompareLabel =
+    sizeChangePercent === null
+      ? ""
+      : sizeChangePercent >= 0
+        ? `比原图小 ${sizeChangePercent}%`
+        : `比原图大 ${Math.abs(sizeChangePercent)}%`;
   const actualQuality = exportResult ? Math.round(exportResult.quality * 100) : null;
+  const currentOutputSize = exportResult ? formatBytes(exportResult.blob.size) : "-";
+  const currentOutputSizeLabel = imageInfo ? (processing ? "计算中" : currentOutputSize) : "选择图片后显示";
   const canDownload = Boolean(exportResult && !processing && !exportStale);
+  const previewImageUrl = exportResult?.url || imageInfo?.objectUrl;
+  const liveStatus =
+    exportNotice ||
+    (!imageInfo
+      ? "选择图片后自动生成"
+      : sizeChangePercent !== null && sizeChangePercent < 0
+        ? "当前导出比原图更大，降低编码质量或尺寸可以减小体积"
+        : "修改会自动更新预览和下载文件");
 
   return (
     <section className="section-stack image-editor-shell">
@@ -476,6 +503,8 @@ export function ImageEditorTool() {
             className={`image-editor-preview-stage${imageInfo ? " has-image" : " is-empty"}`}
             onDragOver={(event) => event.preventDefault()}
             onDrop={handleDrop}
+            onMouseMove={handlePreviewMouseMove}
+            onMouseLeave={hideDetailPreview}
           >
             <input
               className="image-editor-preview-file-input"
@@ -485,7 +514,26 @@ export function ImageEditorTool() {
             />
             {imageInfo ? (
               <>
-                <canvas ref={previewCanvasRef} className="image-editor-preview-canvas" aria-label="图片预览" />
+                <img
+                  ref={previewImageRef}
+                  className={`image-editor-preview-output${exportStale ? " is-stale" : ""}`}
+                  src={previewImageUrl}
+                  alt="导出预览"
+                />
+                {exportResult ? (
+                  <span
+                    className={`image-editor-detail-preview${detailPreview.visible ? " is-visible" : ""}`}
+                    style={{
+                      backgroundImage: `url(${exportResult.url})`,
+                      backgroundPosition: `-${detailPreview.bgX}px -${detailPreview.bgY}px`,
+                      backgroundSize: `${exportResult.width}px ${exportResult.height}px`,
+                      transform: `translate(${detailPreview.x}px, ${detailPreview.y}px)`,
+                    }}
+                    aria-label="1:1 细节预览"
+                  >
+                    <span>1:1 细节</span>
+                  </span>
+                ) : null}
                 <span className="image-editor-preview-action">
                   <PictureOutlined />
                   更换图片
@@ -509,27 +557,27 @@ export function ImageEditorTool() {
               <small>{imageInfo ? formatBytes(imageInfo.fileSize) : "-"}</small>
             </div>
             <div>
-              <span>导出</span>
+              <span>导出尺寸</span>
               <strong>
                 {`${outputWidth} x ${outputHeight}`}
               </strong>
               <small>
                 {processing
-                  ? "自动生成中"
+                  ? "更新中"
                   : exportResult
-                    ? formatBytes(exportResult.blob.size)
+                    ? "已自动生成"
                     : "选择图片后自动生成"}
               </small>
             </div>
             <div>
-              <span>输出质量</span>
-              <strong>{actualQuality ? `${actualQuality}%` : "-"}</strong>
+              <span>当前大小</span>
+              <strong>{processing ? "计算中" : currentOutputSize}</strong>
               <small>
                 {processing
                   ? "更新中"
                   : exportResult
-                    ? `体积减少 ${sizeChange || "0%"}`
-                    : "目标可选"}
+                    ? `${format === "image/png" ? "PNG" : `质量 ${actualQuality}%`} · ${sizeChangeLabel}`
+                    : "随质量自动更新"}
               </small>
             </div>
           </div>
@@ -642,13 +690,9 @@ export function ImageEditorTool() {
                   }}
                 />
               </label>
-              <label>
-                <span>目标大小 KB</span>
-                <InputNumber min={1} max={20000} value={targetKb} onChange={setTargetKb} />
-              </label>
             </div>
             <div className="image-editor-slider-row">
-              <span>{targetKb && format !== "image/png" ? "质量上限" : "质量"} {quality}%</span>
+              <span>{format === "image/png" ? "编码质量（PNG 不使用）" : `编码质量 ${quality}%`}</span>
               <Slider
                 min={15}
                 max={95}
@@ -661,36 +705,9 @@ export function ImageEditorTool() {
               />
               <small>
                 {format === "image/png"
-                  ? "PNG 不支持质量压缩"
-                  : targetKb
-                    ? `目标大小优先，实际输出质量${actualQuality ? ` ${actualQuality}%` : "会自动计算"}`
-                    : "不限制目标大小时，导出质量按滑块执行"}
+                  ? `PNG 体积主要由尺寸决定，当前大小 ${currentOutputSizeLabel}`
+                  : `重新编码后大小 ${currentOutputSizeLabel}${sizeCompareLabel ? `，${sizeCompareLabel}` : ""}`}
               </small>
-            </div>
-            <div className="image-editor-presets">
-              {TARGET_SIZE_PRESETS.map((item) => (
-                <button
-                  key={item}
-                  type="button"
-                  className="image-editor-pill"
-                  onClick={() => {
-                    setTargetKb(item);
-                    markDirty();
-                  }}
-                >
-                  {item} KB
-                </button>
-              ))}
-              <button
-                type="button"
-                className="image-editor-pill"
-                onClick={() => {
-                  setTargetKb(null);
-                  markDirty();
-                }}
-              >
-                不限制
-              </button>
             </div>
           </div>
 
@@ -706,7 +723,7 @@ export function ImageEditorTool() {
               {processing ? "自动生成中" : "下载图片"}
             </Button>
             <span className="image-editor-live-status">
-              {exportNotice || (imageInfo ? "修改会自动更新预览和下载文件" : "选择图片后自动生成")}
+              {liveStatus}
             </span>
           </div>
         </Card>

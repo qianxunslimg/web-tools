@@ -10,6 +10,19 @@ import type {
 } from "../../api/types";
 import type { ToolkitTabKey } from "../../app/types";
 import { ImageEditorTool } from "./ImageEditorTool";
+import {
+  AlmanacTool,
+  CodecTool,
+  ColorTool,
+  HoroscopeBirthdayTool,
+  LifeProgressTool,
+  PdfTool,
+  QrTool,
+  RegexTool,
+  TextTool,
+  TimeTool,
+  UnitConverterTool,
+} from "./UtilityTools";
 
 const defaultExcelUrl = "";
 
@@ -107,6 +120,50 @@ export function ToolkitSection({ activeTab }: ToolkitSectionProps) {
 
   if (activeTab === "image-editor") {
     return <ImageEditorTool />;
+  }
+
+  if (activeTab === "time") {
+    return <TimeTool />;
+  }
+
+  if (activeTab === "horoscope") {
+    return <HoroscopeBirthdayTool />;
+  }
+
+  if (activeTab === "almanac") {
+    return <AlmanacTool />;
+  }
+
+  if (activeTab === "regex") {
+    return <RegexTool />;
+  }
+
+  if (activeTab === "unit") {
+    return <UnitConverterTool />;
+  }
+
+  if (activeTab === "life") {
+    return <LifeProgressTool />;
+  }
+
+  if (activeTab === "qr") {
+    return <QrTool />;
+  }
+
+  if (activeTab === "pdf") {
+    return <PdfTool />;
+  }
+
+  if (activeTab === "codec") {
+    return <CodecTool />;
+  }
+
+  if (activeTab === "color") {
+    return <ColorTool />;
+  }
+
+  if (activeTab === "text") {
+    return <TextTool />;
   }
 
   return (

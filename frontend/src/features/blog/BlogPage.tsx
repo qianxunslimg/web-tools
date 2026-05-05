@@ -173,12 +173,13 @@ export function BlogPage({ route, onNavigate }: BlogPageProps) {
     setDetailError("");
     void fetchBlogPost(year, month, day, postId)
       .then((response) => {
-        if (cancelled || !response.data) {
+        const detail = response.data;
+        if (cancelled || !detail) {
           return;
         }
         setDetailCache((current) => ({
           ...current,
-          [response.data.post_path]: response.data,
+          [detail.post_path]: detail,
         }));
       })
       .catch((error: unknown) => {
@@ -304,17 +305,18 @@ export function BlogPage({ route, onNavigate }: BlogPageProps) {
 
     void fetchBlogPost(year, month, day, postId, password)
       .then((response) => {
-        if (!response.data) {
+        const detail = response.data;
+        if (!detail) {
           setPasswordErrors((current) => ({ ...current, [cacheKey]: "文章解锁失败" }));
           return;
         }
-        if (response.data.password_required && !response.data.password_unlocked) {
+        if (detail.password_required && !detail.password_unlocked) {
           setPasswordErrors((current) => ({ ...current, [cacheKey]: "密码不正确" }));
           return;
         }
         setDetailCache((current) => ({
           ...current,
-          [response.data.post_path]: response.data,
+          [detail.post_path]: detail,
         }));
       })
       .catch((error: unknown) => {

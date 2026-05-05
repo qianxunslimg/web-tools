@@ -1,5 +1,21 @@
 import type { OpsTabKey, PageKey, RouteState, ToolkitTabKey } from "./types";
 
+const toolkitTabKeys: ToolkitTabKey[] = [
+  "image-editor",
+  "time",
+  "horoscope",
+  "almanac",
+  "regex",
+  "unit",
+  "life",
+  "qr",
+  "pdf",
+  "codec",
+  "color",
+  "text",
+  "banyiping",
+];
+
 function normalizePath(pathname: string) {
   const trimmed = pathname.replace(/\/+$/, "");
   return trimmed || "/";
@@ -152,12 +168,19 @@ export function parseRoute(pathname: string): RouteState {
         page: "toolkit",
         toolkitTab: "image-editor",
       };
-    case "/toolkit/image-editor":
-      return {
-        ...buildBaseRoute(path, buildToolkitPath("image-editor")),
-        page: "toolkit",
-        toolkitTab: "image-editor",
-      };
+    default:
+      if (rawSegments[0] === "toolkit" && rawSegments[1] && toolkitTabKeys.includes(rawSegments[1] as ToolkitTabKey)) {
+        const toolkitTab = rawSegments[1] as ToolkitTabKey;
+        return {
+          ...buildBaseRoute(path, buildToolkitPath(toolkitTab)),
+          page: "toolkit",
+          toolkitTab,
+        };
+      }
+      break;
+  }
+
+  switch (path) {
     case "/toolkit/banyiping":
       return {
         ...buildBaseRoute(path, buildToolkitPath("banyiping")),
@@ -200,10 +223,10 @@ export function parseRoute(pathname: string): RouteState {
         page: "ops",
         opsTab: "table",
       };
-    default:
-      return {
-        ...buildBaseRoute(path, "/"),
-        page: "home",
-      };
   }
+
+  return {
+    ...buildBaseRoute(path, "/"),
+    page: "home",
+  };
 }
