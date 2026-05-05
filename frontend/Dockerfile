@@ -1,13 +1,15 @@
-FROM node:20-alpine AS deps
+FROM node:20-bookworm-slim AS deps
 
 WORKDIR /app/frontend
 COPY package.json package-lock.json ./
-ARG NPM_REGISTRY=https://registry.npmmirror.com
-RUN npm config set registry ${NPM_REGISTRY} \
-  && npm ci --no-audit --no-fund
+RUN npm config set registry https://registry.npmmirror.com \
+  && npm config set replace-registry-host npmjs \
+  && npm ci --include=dev --no-audit --no-fund --fetch-retries=3 --fetch-timeout=60000 \
+  && test -x node_modules/.bin/vite
 
 FROM deps AS build
 
+ENV NODE_OPTIONS=--max-old-space-size=512
 COPY . .
 RUN npm run build
 

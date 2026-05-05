@@ -7,7 +7,7 @@ const hasRuntimeEnv = Boolean(runtimeEnv && Object.keys(runtimeEnv).length > 0);
 function readEnv(key: RuntimeEnvKey) {
   if (runtimeEnv && Object.prototype.hasOwnProperty.call(runtimeEnv, key)) {
     const runtimeValue = runtimeEnv[key];
-    if (runtimeValue !== undefined && runtimeValue !== "") {
+    if (runtimeValue !== undefined) {
       return runtimeValue;
     }
     return undefined;
@@ -22,5 +22,5 @@ function readEnv(key: RuntimeEnvKey) {
 }
 
 export const env = {
-  apiBase: readEnv("VITE_API_BASE") || "http://localhost:9000",
+  apiBase: readEnv("VITE_API_BASE") ?? "",
 };

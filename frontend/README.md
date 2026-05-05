@@ -13,9 +13,9 @@
 
 ```bash
 cd frontend
-cp .env.example .env
 npm install
 npm run dev
 ```
 
 默认访问 `http://localhost:5173`。
+如果要改 API 代理地址，再复制 `.env.example` 为 `.env` 并调整对应字段。

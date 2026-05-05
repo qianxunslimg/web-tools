@@ -1,5 +1,6 @@
 logs
 *.pyc
+.env
 backend/.env
 backend/app/.env
 backend/app/site_data/

@@ -4,7 +4,7 @@ set -eu
 hash_file="node_modules/.qianxun-package-lock-hash"
 lock_hash="$(sha256sum package-lock.json | awk '{print $1}')"
 current_hash=""
-npm_registry="${NPM_REGISTRY:-https://registry.npmmirror.com}"
+npm_registry="https://registry.npmmirror.com"
 
 npm config set registry "$npm_registry" >/dev/null
 
@@ -18,4 +18,4 @@ if [ ! -x node_modules/.bin/vite ] || [ "$current_hash" != "$lock_hash" ]; then
   printf "%s" "$lock_hash" > "$hash_file"
 fi
 
-exec npm run dev -- --host 0.0.0.0 --port "${VITE_PORT:-80}"
+exec npm run dev -- --host 0.0.0.0 --port 80

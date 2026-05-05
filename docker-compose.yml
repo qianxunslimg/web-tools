@@ -1,17 +1,31 @@
 services:
   db:
     image: mysql:8.4
+    restart: unless-stopped
+    mem_limit: 768m
+    command:
+      - --performance-schema=OFF
+      - --innodb-buffer-pool-size=128M
+      - --innodb-log-buffer-size=8M
+      - --max-connections=40
+      - --table-open-cache=256
+      - --tmp-table-size=16M
+      - --max-heap-table-size=16M
+      - --sort-buffer-size=262144
+      - --join-buffer-size=262144
+      - --read-buffer-size=262144
+      - --read-rnd-buffer-size=262144
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: database
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     ports:
-      - "4306:3306"
+      - "127.0.0.1:4306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -ppassword --silent"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -p$${MYSQL_ROOT_PASSWORD} --silent"]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -20,12 +34,37 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    env_file:
-      - ./backend/.env
+      network: host
+    environment:
+      DB_ENABLED: "true"
+      DATABASE_URL: mysql://user:password@db:3306/database
+      ENVIRONMENT: local
     volumes:
       - ./backend/app:/app
     ports:
-      - "9000:8000"
+      - "127.0.0.1:9000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  backend-prod:
+    profiles:
+      - prod
+    image: my_fastapi_service-backend-prod
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      network: host
+    restart: unless-stopped
+    mem_limit: 512m
+    environment:
+      DB_ENABLED: "true"
+      DATABASE_URL: mysql://user:password@db:3306/database
+      ENVIRONMENT: prod
+    volumes:
+      - backend_site_data:/app/site_data
+    expose:
+      - "8000"
     depends_on:
       db:
         condition: service_healthy
@@ -35,20 +74,40 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       target: dev
-    env_file:
-      - ./frontend/.env
+      network: host
+    environment:
+      VITE_API_BASE: ""
+      VITE_API_PROXY_TARGET: http://backend:8000
+      CHOKIDAR_USEPOLLING: "true"
     working_dir: /app/frontend
     volumes:
       - ./frontend:/app/frontend
       - frontend_node_modules:/app/frontend/node_modules
-    environment:
-      - CHOKIDAR_USEPOLLING=true
     command: sh ./run-dev.sh
     ports:
-      - "9001:80"
+      - "127.0.0.1:9001:80"
     depends_on:
       - backend
 
+  frontend-prod:
+    profiles:
+      - prod
+    image: my_fastapi_service-frontend-prod
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: prod
+      network: host
+    restart: unless-stopped
+    mem_limit: 128m
+    environment:
+      VITE_API_BASE: ""
+    ports:
+      - "0.0.0.0:9001:80"
+    depends_on:
+      - backend-prod
+
 volumes:
   mysql_data:
+  backend_site_data:
   frontend_node_modules:
