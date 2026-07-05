@@ -9,10 +9,10 @@ body:has(.directory-app) {
 }
 
 .directory-app {
-  width: min(1180px, calc(100vw - 36px));
+  width: min(1500px, calc(100vw - 32px));
   height: auto;
   min-height: 100vh;
-  padding: 28px 0 48px;
+  padding: 14px 0 48px;
   display: block;
 }
 
@@ -283,7 +283,7 @@ body:has(.directory-app) {
 
 @media (max-width: 820px) {
   .directory-app {
-    width: min(720px, calc(100vw - 24px));
+    width: calc(100vw - 24px);
     padding-top: 18px;
   }
 
@@ -302,9 +302,10 @@ body:has(.directory-app) {
   }
 
   .directory-app {
-    width: auto;
+    width: calc(100vw - 16px);
     max-width: none;
-    margin: 0 24px;
+    margin: 0 auto;
+    padding-top: 8px;
   }
 
   .tool-directory-grid {
