@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { NAV_ITEMS, OPS_TABS, SITE_NAME, TOOLKIT_TABS } from "./app/constants";
 import { buildPagePath, parseRoute } from "./app/routes";
 import type { RouteState } from "./app/types";
-import { BlogPage } from "./features/blog/BlogPage";
 import { HomePage } from "./features/home/HomePage";
 import { OpsPage } from "./features/ops/OpsPage";
 import { ToolkitPage } from "./features/toolkit/ToolkitPage";
@@ -71,7 +70,6 @@ export default function App() {
   useEffect(() => {
     const titleMap = {
       home: SITE_NAME,
-      blog: `博客 | ${SITE_NAME}`,
       toolkit: toolkitTitleMap[route.toolkitTab],
       ops:
         route.opsTab === "logs"
@@ -101,16 +99,13 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  const consoleTitle = route.page === "blog" ? `${SITE_NAME} Journal` : `${SITE_NAME} Console`;
+  const consoleTitle = `${SITE_NAME} Console`;
 
   let pageContent;
 
   switch (route.page) {
     case "ops":
       pageContent = <OpsPage activeTab={route.opsTab} />;
-      break;
-    case "blog":
-      pageContent = <BlogPage route={route} onNavigate={handleNavigate} />;
       break;
     case "toolkit":
       pageContent = <ToolkitPage activeTab={route.toolkitTab} />;
@@ -154,7 +149,7 @@ export default function App() {
                     type="button"
                     className={`tab nav-tab${isActive ? " active" : ""}`}
                     onClick={() => {
-                      if (isActive && item.key !== "blog") {
+                      if (isActive) {
                         window.scrollTo({ top: 0, behavior: "smooth" });
                         return;
                       }

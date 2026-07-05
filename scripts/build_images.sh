@@ -11,7 +11,7 @@ Usage:
 
 Examples:
   scripts/build_images.sh
-  scripts/build_images.sh --output release/my_fastapi_service_images.tar
+  scripts/build_images.sh --output release/web-tools-images.tar
 
 This script only builds and exports production images. It does not start services.
 Copy the generated tar to the server, then run:
@@ -46,7 +46,7 @@ while [ "$#" -gt 0 ]; do
 done
 
 if [ -z "$output" ]; then
-    output="release/my_fastapi_service_images.tar"
+    output="release/web-tools-images.tar"
 fi
 
 cd "$repo_dir"
@@ -57,8 +57,8 @@ fi
 
 mkdir -p "$(dirname -- "$output")"
 docker save -o "$output" \
-    my_fastapi_service-backend-prod \
-    my_fastapi_service-frontend-prod
+    web-tools-backend-prod \
+    web-tools-frontend-prod
 
 cat <<EOF
 Image archive created: $output

@@ -18,7 +18,7 @@ Examples:
   scripts/run.sh prod --down
 
 Defaults:
-  dev  -> docker compose up -d --build db backend frontend
+  dev  -> docker compose up -d --build backend frontend
   prod -> docker compose --profile prod up -d --no-build backend-prod frontend-prod
 EOF
 }
@@ -46,7 +46,7 @@ if [[ "$mode" == "prod" ]]; then
     services=(backend-prod frontend-prod)
 else
     build_arg="--build"
-    services=(db backend frontend)
+    services=(backend frontend)
 fi
 
 extra_args=()

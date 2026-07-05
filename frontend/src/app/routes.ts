@@ -1,5 +1,8 @@
 import type { OpsTabKey, PageKey, RouteState, ToolkitTabKey } from "./types";
 
+const rawBasePath = (import.meta.env.VITE_BASE_PATH || import.meta.env.BASE_URL || "/").replace(/\/+$/, "");
+const appBasePath = rawBasePath === "" || rawBasePath === "/" ? "" : rawBasePath;
+
 const toolkitTabKeys: ToolkitTabKey[] = [
   "image-editor",
   "time",
@@ -21,54 +24,53 @@ function normalizePath(pathname: string) {
   return trimmed || "/";
 }
 
+function stripBasePath(pathname: string) {
+  const path = normalizePath(pathname);
+  if (!appBasePath) {
+    return path;
+  }
+  if (path === appBasePath) {
+    return "/";
+  }
+  if (path.startsWith(`${appBasePath}/`)) {
+    return normalizePath(path.slice(appBasePath.length));
+  }
+  return path;
+}
+
+function withBasePath(pathname: string) {
+  const path = normalizePath(pathname);
+  if (!appBasePath) {
+    return path;
+  }
+  if (path === "/") {
+    return `${appBasePath}/`;
+  }
+  return `${appBasePath}${path}`;
+}
+
 function buildBaseRoute(path: string, canonicalPath: string): RouteState {
   return {
     page: "home",
     toolkitTab: "image-editor",
     opsTab: "features",
-    blogMode: "index",
-    blogTag: null,
-    blogCategory: null,
-    blogPostPath: null,
     path,
     canonicalPath,
   };
 }
 
-function isDateSegment(value?: string) {
-  return !!value && /^\d+$/.test(value);
-}
-
 export function buildToolkitPath(tab: ToolkitTabKey) {
-  return "/toolkit/" + tab;
+  return withBasePath("/toolkit/" + tab);
 }
 
 export function buildOpsPath(tab: OpsTabKey) {
-  return "/ops/" + tab;
-}
-
-export function buildBlogPath() {
-  return "/blog";
-}
-
-export function buildBlogTagPath(tag: string) {
-  return `/blog/tags/${encodeURIComponent(tag)}`;
-}
-
-export function buildBlogCategoryPath(category: string) {
-  return `/blog/categories/${encodeURIComponent(category)}`;
-}
-
-export function buildBlogPostPath(postPath: string) {
-  return `/blog/${postPath.replace(/^\/+|\/+$/g, "")}`;
+  return withBasePath("/ops/" + tab);
 }
 
 export function buildPagePath(page: PageKey) {
   switch (page) {
     case "home":
-      return "/";
-    case "blog":
-      return buildBlogPath();
+      return withBasePath("/");
     case "toolkit":
       return buildToolkitPath("image-editor");
     case "ops":
@@ -79,92 +81,19 @@ export function buildPagePath(page: PageKey) {
 }
 
 export function parseRoute(pathname: string): RouteState {
-  const path = normalizePath(pathname);
+  const originalPath = normalizePath(pathname);
+  const path = stripBasePath(originalPath);
   const rawSegments = path.split("/").filter(Boolean);
-
-  if (rawSegments[0] === "blog") {
-    if (rawSegments.length === 1) {
-      return {
-        ...buildBaseRoute(path, buildBlogPath()),
-        page: "blog",
-      };
-    }
-
-    if (rawSegments[1] === "tags" && rawSegments[2]) {
-      const tag = decodeURIComponent(rawSegments.slice(2).join("/"));
-      return {
-        ...buildBaseRoute(path, buildBlogTagPath(tag)),
-        page: "blog",
-        blogMode: "tag",
-        blogTag: tag,
-      };
-    }
-
-    if (rawSegments[1] === "categories" && rawSegments[2]) {
-      const category = decodeURIComponent(rawSegments.slice(2).join("/"));
-      return {
-        ...buildBaseRoute(path, buildBlogCategoryPath(category)),
-        page: "blog",
-        blogMode: "category",
-        blogCategory: category,
-      };
-    }
-
-    if (
-      rawSegments.length === 5 &&
-      isDateSegment(rawSegments[1]) &&
-      isDateSegment(rawSegments[2]) &&
-      isDateSegment(rawSegments[3])
-    ) {
-      const postPath = [
-        rawSegments[1],
-        rawSegments[2],
-        rawSegments[3],
-        decodeURIComponent(rawSegments[4]),
-      ].join("/");
-      return {
-        ...buildBaseRoute(path, buildBlogPostPath(postPath)),
-        page: "blog",
-        blogMode: "post",
-        blogPostPath: postPath,
-      };
-    }
-
-    return {
-      ...buildBaseRoute(path, buildBlogPath()),
-      page: "blog",
-    };
-  }
-
-  if (
-    rawSegments.length === 4 &&
-    isDateSegment(rawSegments[0]) &&
-    isDateSegment(rawSegments[1]) &&
-    isDateSegment(rawSegments[2])
-  ) {
-    const postPath = [
-      rawSegments[0],
-      rawSegments[1],
-      rawSegments[2],
-      decodeURIComponent(rawSegments[3]),
-    ].join("/");
-    return {
-      ...buildBaseRoute(path, buildBlogPostPath(postPath)),
-      page: "blog",
-      blogMode: "post",
-      blogPostPath: postPath,
-    };
-  }
 
   switch (path) {
     case "/":
       return {
-        ...buildBaseRoute(path, "/"),
+        ...buildBaseRoute(originalPath, buildPagePath("home")),
         page: "home",
       };
     case "/toolkit":
       return {
-        ...buildBaseRoute(path, buildToolkitPath("image-editor")),
+        ...buildBaseRoute(originalPath, buildToolkitPath("image-editor")),
         page: "toolkit",
         toolkitTab: "image-editor",
       };
@@ -172,7 +101,7 @@ export function parseRoute(pathname: string): RouteState {
       if (rawSegments[0] === "toolkit" && rawSegments[1] && toolkitTabKeys.includes(rawSegments[1] as ToolkitTabKey)) {
         const toolkitTab = rawSegments[1] as ToolkitTabKey;
         return {
-          ...buildBaseRoute(path, buildToolkitPath(toolkitTab)),
+          ...buildBaseRoute(originalPath, buildToolkitPath(toolkitTab)),
           page: "toolkit",
           toolkitTab,
         };
@@ -183,50 +112,50 @@ export function parseRoute(pathname: string): RouteState {
   switch (path) {
     case "/toolkit/banyiping":
       return {
-        ...buildBaseRoute(path, buildToolkitPath("banyiping")),
+        ...buildBaseRoute(originalPath, buildToolkitPath("banyiping")),
         page: "toolkit",
         toolkitTab: "banyiping",
       };
     case "/toolkit/health":
       return {
-        ...buildBaseRoute(path, buildOpsPath("features")),
+        ...buildBaseRoute(originalPath, buildOpsPath("features")),
         page: "ops",
         opsTab: "features",
       };
     case "/toolkit/intake":
       return {
-        ...buildBaseRoute(path, buildToolkitPath("banyiping")),
+        ...buildBaseRoute(originalPath, buildToolkitPath("banyiping")),
         page: "toolkit",
         toolkitTab: "banyiping",
       };
     case "/ops":
       return {
-        ...buildBaseRoute(path, buildOpsPath("features")),
+        ...buildBaseRoute(originalPath, buildOpsPath("features")),
         page: "ops",
         opsTab: "features",
       };
     case "/ops/features":
       return {
-        ...buildBaseRoute(path, buildOpsPath("features")),
+        ...buildBaseRoute(originalPath, buildOpsPath("features")),
         page: "ops",
         opsTab: "features",
       };
     case "/ops/logs":
       return {
-        ...buildBaseRoute(path, buildOpsPath("logs")),
+        ...buildBaseRoute(originalPath, buildOpsPath("logs")),
         page: "ops",
         opsTab: "logs",
       };
     case "/ops/table":
       return {
-        ...buildBaseRoute(path, buildOpsPath("table")),
+        ...buildBaseRoute(originalPath, buildOpsPath("table")),
         page: "ops",
         opsTab: "table",
       };
   }
 
   return {
-    ...buildBaseRoute(path, "/"),
+    ...buildBaseRoute(originalPath, buildPagePath("home")),
     page: "home",
   };
 }

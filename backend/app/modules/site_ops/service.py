@@ -16,21 +16,13 @@ from core.config import get_time_zone, settings
 
 
 FEATURE_FILE_LOCK = RLock()
-REMOVED_FEATURE_FLAG_KEYS = {"toolkit_intake_form"}
+REMOVED_FEATURE_FLAG_KEYS = {"toolkit_intake_form", "site_blog"}
 
 DEFAULT_FEATURE_FLAGS = [
     {
         "key": "site_overview_cards",
         "label": "首页导航卡片",
         "description": "首页展示最近能力和快捷入口。",
-        "group": "site",
-        "enabled": True,
-        "public": True,
-    },
-    {
-        "key": "site_blog",
-        "label": "博客",
-        "description": "个人博客内容和文章详情页。",
         "group": "site",
         "enabled": True,
         "public": True,

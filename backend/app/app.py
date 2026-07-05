@@ -12,7 +12,6 @@ from core.config import get_time_zone, settings
 from core.exceptions import register_exception_handlers
 from core.middleware import AccessLogMiddleware
 from db.db import register_db
-from modules.blog import warmup_blog_catalog
 
 
 OPENAPI_TAGS = [
@@ -23,10 +22,6 @@ OPENAPI_TAGS = [
     {
         "name": "site 站点能力",
         "description": "公开站点运行态和工具配置接口",
-    },
-    {
-        "name": "blog 博客",
-        "description": "博客内容、详情和静态资源接口",
     },
     {
         "name": "ops 运维能力",
@@ -44,14 +39,12 @@ async def lifespan(application: FastAPI):
     setup_logging()
     settings.ensure_directories()
     settings.log_config()
-    blog_count = warmup_blog_catalog()
     log_banner(
         "{} started at {}".format(
             settings.APP_NAME,
             datetime.now(tz=get_time_zone()).strftime("%Y-%m-%d %H:%M:%S"),
         )
     )
-    log_banner("blog catalog warmed with {} posts".format(blog_count))
     yield
     log_banner(
         "{} stopped at {}".format(

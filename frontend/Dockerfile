@@ -10,6 +10,8 @@ RUN npm config set registry https://registry.npmmirror.com \
 FROM deps AS build
 
 ENV NODE_OPTIONS=--max-old-space-size=512
+ARG VITE_BASE_PATH=/
+ENV VITE_BASE_PATH=${VITE_BASE_PATH}
 COPY . .
 RUN npm run build
 

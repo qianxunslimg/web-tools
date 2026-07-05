@@ -22,40 +22,6 @@ export type SiteRuntimeData = {
   feature_map: Record<string, boolean>;
 };
 
-export type BlogFacetItem = {
-  name: string;
-  count: number;
-};
-
-export type BlogPostSummary = {
-  title: string;
-  post_path: string;
-  url_path: string;
-  published_at: string;
-  updated_at: string | null;
-  summary: string;
-  excerpt: string;
-  categories: string[];
-  tags: string[];
-  cover_image: string | null;
-  word_count: number;
-  reading_minutes: number;
-  top: number;
-  password_required: boolean;
-  password_unlocked: boolean;
-};
-
-export type BlogPostDetail = BlogPostSummary & {
-  content_html: string;
-};
-
-export type BlogIndexData = {
-  posts: BlogPostSummary[];
-  tags: BlogFacetItem[];
-  categories: BlogFacetItem[];
-  total_posts: number;
-};
-
 export type ServiceHealthData = {
   name: string;
   version: string;

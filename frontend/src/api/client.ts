@@ -1,7 +1,5 @@
 import { env } from "../env";
 import type {
-  BlogIndexData,
-  BlogPostDetail,
   BypAnalysisData,
   CommonResponse,
   OpsFeatureFlagListData,
@@ -184,23 +182,6 @@ export function subscribeRequestStatus(listener: RequestStatusListener) {
 
 export async function fetchSiteRuntime() {
   return getJson<CommonResponse<SiteRuntimeData>>(`${API_PREFIX}/site/runtime`);
-}
-
-export async function fetchBlogIndex() {
-  return getJson<CommonResponse<BlogIndexData>>(`${API_PREFIX}/blog/index`);
-}
-
-export async function fetchBlogPost(
-  year: string,
-  month: string,
-  day: string,
-  postId: string,
-  password = ""
-) {
-  const query = password ? buildQuery({ password }) : "";
-  return getJson<CommonResponse<BlogPostDetail>>(
-    `${API_PREFIX}/blog/posts/${year}/${month}/${day}/${encodeURIComponent(postId)}${query}`
-  );
 }
 
 export async function fetchServiceHealth() {

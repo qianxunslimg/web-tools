@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-export type PageKey = "home" | "blog" | "toolkit" | "ops";
+export type PageKey = "home" | "toolkit" | "ops";
 export type ToolkitTabKey =
   | "image-editor"
   | "time"
@@ -16,7 +16,6 @@ export type ToolkitTabKey =
   | "text"
   | "banyiping";
 export type OpsTabKey = "features" | "logs" | "table";
-export type BlogMode = "index" | "tag" | "category" | "post";
 
 export type NavItem = {
   key: PageKey;
@@ -35,10 +34,6 @@ export type RouteState = {
   page: PageKey;
   toolkitTab: ToolkitTabKey;
   opsTab: OpsTabKey;
-  blogMode: BlogMode;
-  blogTag: string | null;
-  blogCategory: string | null;
-  blogPostPath: string | null;
   path: string;
   canonicalPath: string;
 };
