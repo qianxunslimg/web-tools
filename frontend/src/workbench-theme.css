@@ -347,6 +347,81 @@ body::before {
   border-color: rgba(140, 247, 232, 0.56) !important;
 }
 
+.image-editor-control-section {
+  border-bottom-color: rgba(64, 80, 100, 0.8) !important;
+}
+
+.image-editor-control-section > label span,
+.image-editor-setting-grid label span,
+.image-editor-slider-row > span,
+.image-editor-slider-row > small,
+.image-editor-metrics span,
+.image-editor-metrics small,
+.image-editor-live-status {
+  color: #a8b6c7 !important;
+}
+
+.image-editor-metrics strong {
+  color: #f4f7fb !important;
+}
+
+.image-editor-pill {
+  border: 1px solid #2c3949 !important;
+  border-radius: 999px !important;
+  background: rgba(12, 18, 28, 0.94) !important;
+  color: #d7e1ec !important;
+  box-shadow: none !important;
+}
+
+.image-editor-pill:hover:not(:disabled) {
+  border-color: rgba(140, 247, 232, 0.5) !important;
+  background: rgba(20, 184, 166, 0.13) !important;
+  color: #8cf7e8 !important;
+  transform: none !important;
+}
+
+.image-editor-pill:disabled {
+  border-color: #334155 !important;
+  background: rgba(51, 65, 85, 0.72) !important;
+  color: #b7c4d4 !important;
+  cursor: not-allowed;
+  opacity: 1 !important;
+}
+
+.image-editor-color-input {
+  border: 1px solid #2c3949 !important;
+  border-radius: 8px !important;
+  background: rgba(7, 11, 18, 0.88) !important;
+  box-shadow: none !important;
+}
+
+.image-editor-control-card .ant-checkbox-wrapper {
+  color: #d7e1ec !important;
+}
+
+.image-editor-control-card .ant-checkbox-inner {
+  border-color: #405064 !important;
+  background: rgba(7, 11, 18, 0.88) !important;
+}
+
+.image-editor-control-card .ant-checkbox-checked .ant-checkbox-inner {
+  border-color: #14b8a6 !important;
+  background: #14b8a6 !important;
+}
+
+.image-editor-control-card .ant-slider-track {
+  background: #8cf7e8 !important;
+}
+
+.image-editor-control-card .ant-slider-rail {
+  background: #263241 !important;
+}
+
+.image-editor-control-card .ant-slider-handle::after {
+  background: #101822 !important;
+  box-shadow: 0 0 0 2px #8cf7e8 !important;
+}
+
 .utility-two-column {
   min-width: 0;
   grid-template-columns: minmax(0, 1fr) minmax(330px, 1fr);

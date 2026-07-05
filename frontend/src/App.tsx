@@ -115,7 +115,7 @@ export default function App() {
     <ConfigProvider theme={antdTheme}>
       <div className="app">
         <header className="header workbench-header">
-          <button type="button" className="console-brand" onClick={() => handleNavigate(buildPagePath("toolkit"))}>
+          <button type="button" className="console-brand" onClick={() => handleNavigate(buildPagePath("home"))}>
             <span className="header-logo">wt</span>
             <span className="workbench-brand-copy">
               <strong>{SITE_NAME}</strong>
