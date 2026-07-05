@@ -1,6 +1,5 @@
 import {
   ExperimentOutlined,
-  HomeOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
 
@@ -9,7 +8,6 @@ import type { NavItem, OpsTabKey, SubNavItem, ToolkitTabKey } from "./types";
 
 export const SITE_NAME = "Web Tools";
 export const NAV_ITEMS: NavItem[] = [
-  { key: "home", label: "首页", icon: <HomeOutlined />, path: buildPagePath("home") },
   { key: "toolkit", label: "工具", icon: <ExperimentOutlined />, path: buildPagePath("toolkit") },
   { key: "ops", label: "运维", icon: <SettingOutlined />, path: buildPagePath("ops") },
 ];
@@ -27,6 +25,7 @@ export const TOOLKIT_TABS: SubNavItem<ToolkitTabKey>[] = [
   { key: "codec", label: "编码", path: buildToolkitPath("codec") },
   { key: "color", label: "颜色", path: buildToolkitPath("color") },
   { key: "text", label: "文本整理", path: buildToolkitPath("text") },
+  { key: "gpt-token", label: "GPT 转换", path: buildToolkitPath("gpt-token") },
   { key: "banyiping", label: "BYP", path: buildToolkitPath("banyiping") },
 ];
 

@@ -1,10 +1,10 @@
+import { SettingOutlined } from "@ant-design/icons";
 import { ConfigProvider, theme } from "antd";
 import { useEffect, useState } from "react";
 
-import { NAV_ITEMS, OPS_TABS, SITE_NAME, TOOLKIT_TABS } from "./app/constants";
+import { OPS_TABS, SITE_NAME, TOOLKIT_TABS } from "./app/constants";
 import { buildPagePath, parseRoute } from "./app/routes";
 import type { RouteState } from "./app/types";
-import { HomePage } from "./features/home/HomePage";
 import { OpsPage } from "./features/ops/OpsPage";
 import { ToolkitPage } from "./features/toolkit/ToolkitPage";
 
@@ -16,16 +16,15 @@ const antdTheme = {
     colorSuccess: "#6fba2c",
     colorWarning: "#f5c31c",
     colorError: "#e05a5a",
-    colorBgBase: "#f8f8f0",
-    colorBgContainer: "rgb(247, 243, 223)",
-    colorBgElevated: "#fffaf0",
-    colorText: "#725d42",
-    colorTextSecondary: "#9f927d",
-    colorBorder: "#c4b89e",
-    borderRadius: 20,
-    controlHeight: 45,
-    fontFamily:
-      '"Nunito", "Noto Sans SC", "Zen Maru Gothic", "PingFang SC", "Hiragino Sans GB", system-ui, sans-serif',
+    colorBgBase: "#f6f8fb",
+    colorBgContainer: "#ffffff",
+    colorBgElevated: "#ffffff",
+    colorText: "#1f2937",
+    colorTextSecondary: "#64748b",
+    colorBorder: "#d8dee8",
+    borderRadius: 8,
+    controlHeight: 38,
+    fontFamily: '"Inter", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", system-ui, sans-serif',
   },
 };
 
@@ -42,6 +41,7 @@ const toolkitTitleMap: Record<RouteState["toolkitTab"], string> = {
   codec: `编码工具 | ${SITE_NAME}`,
   color: `颜色工具 | ${SITE_NAME}`,
   text: `文本整理 | ${SITE_NAME}`,
+  "gpt-token": `GPT 转换 | ${SITE_NAME}`,
   banyiping: `BYP | ${SITE_NAME}`,
 };
 
@@ -69,14 +69,9 @@ export default function App() {
 
   useEffect(() => {
     const titleMap = {
-      home: SITE_NAME,
+      home: toolkitTitleMap[route.toolkitTab],
       toolkit: toolkitTitleMap[route.toolkitTab],
-      ops:
-        route.opsTab === "logs"
-          ? `日志 | ${SITE_NAME}`
-          : route.opsTab === "table"
-            ? `数据库 | ${SITE_NAME}`
-            : `控制台 | ${SITE_NAME}`,
+      ops: route.opsTab === "logs" ? `日志 | ${SITE_NAME}` : route.opsTab === "table" ? `数据库 | ${SITE_NAME}` : `控制台 | ${SITE_NAME}`,
     };
 
     document.title = titleMap[route.page];
@@ -99,97 +94,53 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  const consoleTitle = `${SITE_NAME} Console`;
+  const activeTool = TOOLKIT_TABS.find((item) => item.key === route.toolkitTab);
+  const activeOps = OPS_TABS.find((item) => item.key === route.opsTab);
+  const activeLabel = route.page === "ops" ? activeOps?.label || "运维" : activeTool?.label || "工具";
+  const centerTabs = route.page === "ops" ? OPS_TABS : TOOLKIT_TABS;
 
-  let pageContent;
-
-  switch (route.page) {
-    case "ops":
-      pageContent = <OpsPage activeTab={route.opsTab} />;
-      break;
-    case "toolkit":
-      pageContent = <ToolkitPage activeTab={route.toolkitTab} />;
-      break;
-    case "home":
-    default:
-      pageContent = <HomePage onNavigate={handleNavigate} />;
-      break;
-  }
+  const pageContent = route.page === "ops" ? <OpsPage activeTab={route.opsTab} /> : <ToolkitPage activeTab={route.toolkitTab} />;
 
   return (
     <ConfigProvider theme={antdTheme}>
       <div className="app">
-        <header className="header">
-          <div className="header-title-row">
-            <button
-              type="button"
-              className="console-brand"
-              onClick={() => handleNavigate(buildPagePath("home"))}
-            >
-              <span className="header-logo">QX</span>
-              <h2 className="console-title">{consoleTitle}</h2>
-            </button>
-          </div>
-        </header>
+        <header className="header workbench-header">
+          <button type="button" className="console-brand" onClick={() => handleNavigate(buildPagePath("toolkit"))}>
+            <span className="header-logo">QX</span>
+            <span className="workbench-brand-copy">
+              <strong>{SITE_NAME}</strong>
+              <span>{activeLabel}</span>
+            </span>
+          </button>
 
-        <div className="app-shell">
-          <aside className="sidebar">
-            {NAV_ITEMS.map((item) => {
-              const isActive = route.page === item.key;
-              const subnavItems =
-                item.key === "toolkit"
-                  ? TOOLKIT_TABS
-                  : item.key === "ops"
-                    ? OPS_TABS
-                    : [];
-
+          <nav className="workbench-tool-nav" aria-label={route.page === "ops" ? "运维导航" : "工具导航"}>
+            {centerTabs.map((item) => {
+              const isActive = route.page === "ops" ? route.opsTab === item.key : route.toolkitTab === item.key;
               return (
-                <div key={item.key} className="sidebar-nav-group">
-                  <button
-                    type="button"
-                    className={`tab nav-tab${isActive ? " active" : ""}`}
-                    onClick={() => {
-                      if (isActive) {
-                        window.scrollTo({ top: 0, behavior: "smooth" });
-                        return;
-                      }
-                      handleNavigate(item.path);
-                    }}
-                  >
-                    <span className="nav-tab-icon">{item.icon}</span>
-                    <span>{item.label}</span>
-                  </button>
-
-                  {isActive && subnavItems.length > 0 ? (
-                    <div className="sidebar-inline-subnav">
-                      {subnavItems.map((subItem) => {
-                        const isSubnavActive =
-                          item.key === "toolkit"
-                            ? route.toolkitTab === subItem.key
-                            : route.opsTab === subItem.key;
-
-                        return (
-                          <button
-                            key={subItem.key}
-                            type="button"
-                            className={`sidebar-subnav-btn${isSubnavActive ? " active" : ""}`}
-                            onClick={() => handleNavigate(subItem.path)}
-                          >
-                            {subItem.label}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  ) : null}
-                </div>
+                <button
+                  key={item.key}
+                  type="button"
+                  className={`workbench-tool-tab${isActive ? " active" : ""}`}
+                  onClick={() => handleNavigate(item.path)}
+                >
+                  {item.label}
+                </button>
               );
             })}
-          </aside>
+          </nav>
 
-          <main className="main">
-            {pageContent}
-          </main>
-        </div>
+          <button
+            type="button"
+            className={`ops-icon-button${route.page === "ops" ? " active" : ""}`}
+            title="运维"
+            aria-label="运维"
+            onClick={() => handleNavigate(buildPagePath("ops"))}
+          >
+            <SettingOutlined />
+          </button>
+        </header>
+
+        <main className="main workbench-main">{pageContent}</main>
       </div>
     </ConfigProvider>
   );

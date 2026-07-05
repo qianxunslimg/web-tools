@@ -9,6 +9,7 @@ import type {
   StudentAnalysisItem,
 } from "../../api/types";
 import type { ToolkitTabKey } from "../../app/types";
+import { GptTokenConverterTool } from "./GptTokenConverterTool";
 import { ImageEditorTool } from "./ImageEditorTool";
 import {
   AlmanacTool,
@@ -164,6 +165,10 @@ export function ToolkitSection({ activeTab }: ToolkitSectionProps) {
 
   if (activeTab === "text") {
     return <TextTool />;
+  }
+
+  if (activeTab === "gpt-token") {
+    return <GptTokenConverterTool />;
   }
 
   return (

@@ -1,0 +1,486 @@
+/* Final workbench shell overrides. Keep this imported after the legacy theme. */
+:root {
+  --animal-page: #f6f8fb;
+  --animal-page-deep: #e7edf5;
+  --animal-content: #ffffff;
+  --animal-card: #ffffff;
+  --animal-card-soft: #f3f7fb;
+  --animal-text: #263241;
+  --animal-title: #142033;
+  --animal-muted: #64748b;
+  --animal-soft: #d8dee8;
+  --animal-border: #d8dee8;
+  --animal-border-light: #e6ebf2;
+  --animal-teal: #12b8aa;
+  --animal-teal-hover: #18cfc0;
+  --animal-teal-active: #0b948a;
+  --animal-teal-soft: #e7fbf8;
+  --animal-focus: #f5c31c;
+  --animal-focus-dark: #d7a90a;
+  --animal-green: #5fb845;
+  --animal-switch: #6fba2c;
+  --animal-blue: #dce8ff;
+  --animal-blue-hover: #eef5ff;
+  --animal-warning: #f5c31c;
+  --animal-error: #d94b4b;
+  --animal-shadow-btn: rgba(20, 32, 51, 0.08);
+  --animal-shadow-input: rgba(20, 32, 51, 0.1);
+  --animal-shadow-warm: rgba(20, 32, 51, 0.08);
+  --animal-shadow-strong: rgba(20, 32, 51, 0.14);
+  --animal-radius-sm: 8px;
+  --animal-radius: 8px;
+  --animal-radius-lg: 12px;
+  --animal-radius-organic: 12px;
+  --animal-font: "Inter", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", system-ui, sans-serif;
+}
+
+* {
+  scrollbar-color: #b8c3d3 #eef3f8;
+}
+
+*::-webkit-scrollbar-track {
+  background: #eef3f8;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #b8c3d3;
+  border-color: #eef3f8;
+}
+
+body {
+  color: var(--animal-text);
+  background:
+    linear-gradient(135deg, rgba(18, 184, 170, 0.12), transparent 34%),
+    linear-gradient(180deg, #f9fbff 0%, var(--animal-page) 48%, var(--animal-page-deep) 100%);
+  font-family: var(--animal-font);
+  font-weight: 500;
+}
+
+body::before {
+  background-image:
+    linear-gradient(90deg, rgba(100, 116, 139, 0.07) 1px, transparent 1px),
+    linear-gradient(rgba(100, 116, 139, 0.07) 1px, transparent 1px);
+  background-size: 80px 80px;
+  opacity: 0.55;
+}
+
+.app {
+  width: min(1500px, calc(100vw - 32px));
+  height: 100vh;
+  min-height: 100vh;
+  padding: 14px 0 16px;
+  gap: 12px;
+}
+
+.header.workbench-header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  min-height: 64px;
+  padding: 10px 12px;
+  border: 1px solid rgba(216, 222, 232, 0.95);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 14px 36px rgba(20, 32, 51, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.workbench-header .console-brand {
+  min-width: 190px;
+  gap: 10px;
+  text-align: left;
+}
+
+.workbench-header .header-logo {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #12b8aa, #1a83ff);
+  color: #ffffff;
+  font-size: 14px;
+  box-shadow: none;
+}
+
+.workbench-brand-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.workbench-brand-copy strong {
+  color: var(--animal-title);
+  font-size: 17px;
+  line-height: 1.1;
+  font-weight: 850;
+}
+
+.workbench-brand-copy span {
+  max-width: 170px;
+  overflow: hidden;
+  color: var(--animal-muted);
+  font-size: 12px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workbench-tool-nav {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 4px;
+  border: 1px solid #e6ebf2;
+  border-radius: 10px;
+  background: #f3f7fb;
+}
+
+.workbench-tool-tab {
+  flex: 0 0 auto;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 750;
+  white-space: nowrap;
+  transition: background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+}
+
+.workbench-tool-tab:hover {
+  background: #ffffff;
+  color: var(--animal-title);
+}
+
+.workbench-tool-tab.active {
+  background: #ffffff;
+  color: #0b948a;
+  box-shadow: 0 5px 14px rgba(20, 32, 51, 0.08);
+}
+
+.ops-icon-button {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d8dee8;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+}
+
+.ops-icon-button:hover,
+.ops-icon-button.active {
+  border-color: rgba(18, 184, 170, 0.42);
+  background: var(--animal-teal-soft);
+  color: #0b948a;
+  box-shadow: 0 6px 16px rgba(18, 184, 170, 0.13);
+}
+
+.main.workbench-main {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 0 2px 2px;
+}
+
+.main.workbench-main > .page-stack {
+  min-height: 100%;
+}
+
+.page-stack,
+.section-stack {
+  gap: 12px;
+}
+
+.panel-card,
+.card,
+.panel-card.ant-card,
+.card.ant-card {
+  border: 1px solid rgba(216, 222, 232, 0.95);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--animal-text);
+  box-shadow: 0 12px 30px rgba(20, 32, 51, 0.07);
+}
+
+.panel-card.ant-card .ant-card-body,
+.card.ant-card .ant-card-body {
+  padding: 18px;
+}
+
+.status-card-head h3,
+.result-head h3 {
+  color: var(--animal-title);
+  font-size: 24px;
+}
+
+.status-card-head p,
+.result-head p,
+.tool-empty p {
+  color: var(--animal-muted);
+}
+
+.section-chip,
+.eyebrow {
+  min-height: 24px;
+  padding: 3px 9px;
+  background: #e7fbf8;
+  color: #0b948a;
+  font-size: 11px;
+  letter-spacing: 0;
+}
+
+.image-editor-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
+  gap: 14px;
+}
+
+.image-editor-preview-card .ant-card-body,
+.image-editor-control-card .ant-card-body {
+  padding: 16px;
+}
+
+.image-editor-preview-stage {
+  border-width: 1px;
+  border-color: #d8dee8;
+  border-radius: 12px;
+  background-color: #f8fbff;
+  background-image:
+    linear-gradient(45deg, #eef3f8 25%, transparent 25%),
+    linear-gradient(-45deg, #eef3f8 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #eef3f8 75%),
+    linear-gradient(-45deg, transparent 75%, #eef3f8 75%);
+}
+
+.utility-two-column {
+  grid-template-columns: minmax(0, 1fr) minmax(330px, 1fr);
+  gap: 14px;
+}
+
+.utility-tool-card textarea.ant-input,
+.app .ant-input,
+.app .ant-input-affix-wrapper,
+.app .ant-select-selector,
+.app .ant-input-number,
+.app .ant-picker {
+  border-color: #d8dee8 !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
+
+.app .ant-btn {
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+.app .ant-btn-primary {
+  background: #12b8aa;
+  box-shadow: none;
+}
+
+.app .ant-btn-primary:not(:disabled):hover {
+  background: #0b948a;
+}
+
+.utility-output-item,
+.image-editor-metrics > div,
+.image-editor-control-card .image-editor-section,
+.status-card {
+  border-color: #e6ebf2;
+  border-radius: 10px;
+  background: #f8fbff;
+  box-shadow: none;
+}
+
+.gpt-session-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.gpt-session-summary .utility-output-item strong {
+  font-size: 14px;
+  line-height: 1.35;
+  white-space: normal;
+}
+
+.gpt-manual-panel {
+  padding: 12px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+  background: #f8fbff;
+}
+
+.gpt-token-tool .status-card-head h3,
+.gpt-token-tool .status-card-head p,
+.gpt-token-tool .ant-alert-message {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1100px) {
+  .app {
+    width: calc(100vw - 24px);
+    height: auto;
+    min-height: 100vh;
+    padding: 12px 0;
+  }
+
+  .header.workbench-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .workbench-tool-nav {
+    grid-column: 1 / -1;
+    order: 3;
+  }
+
+  .main.workbench-main {
+    overflow: visible;
+  }
+}
+
+@media (max-width: 720px) {
+  .app {
+    width: 100%;
+    max-width: 100%;
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .header.workbench-header {
+    gap: 8px;
+    min-height: 0;
+    padding: 8px;
+    border-radius: 10px;
+  }
+
+  .workbench-header .console-brand {
+    min-width: 0;
+  }
+
+  .workbench-header .header-logo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .workbench-brand-copy strong {
+    max-width: 42vw;
+    overflow: hidden;
+    font-size: 16px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .workbench-brand-copy span {
+    max-width: 42vw;
+  }
+
+  .workbench-tool-tab {
+    min-height: 32px;
+    padding: 0 10px;
+    font-size: 12px;
+  }
+
+  .ops-icon-button {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+  }
+
+  .main.workbench-main {
+    padding: 0;
+  }
+
+  .panel-card.ant-card .ant-card-body,
+  .card.ant-card .ant-card-body {
+    padding: 13px;
+  }
+
+  .status-card-head {
+    align-items: flex-start;
+  }
+
+  .status-card-head h3,
+  .result-head h3 {
+    font-size: 21px;
+  }
+
+  .image-editor-layout,
+  .utility-two-column,
+  .analysis-grid,
+  .ops-console-top,
+  .ops-content-grid,
+  .ops-feature-grid,
+  .ops-health-metrics,
+  .ops-console-summary-grid,
+  .time-tool-board,
+  .time-lunar-grid,
+  .horoscope-layout,
+  .horoscope-score-grid,
+  .horoscope-advice-grid,
+  .almanac-layout,
+  .almanac-yi-ji-grid,
+  .almanac-section-grid,
+  .regex-tool-layout,
+  .unit-tool-layout,
+  .life-layout,
+  .utility-inline-grid,
+  .utility-option-grid,
+  .gpt-session-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .utility-two-column > *,
+  .utility-form-stack > *,
+  .utility-field > * {
+    min-width: 0;
+  }
+
+  .utility-tool-card textarea.ant-input {
+    min-height: 180px;
+  }
+
+  .gpt-token-tool,
+  .gpt-token-tool .ant-card-body,
+  .gpt-token-tool .utility-two-column,
+  .gpt-token-tool .utility-form-stack,
+  .gpt-token-tool .gpt-manual-panel {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .gpt-token-tool .status-card-head h3 {
+    font-size: 19px;
+    line-height: 1.25;
+  }
+
+  .gpt-token-tool .utility-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .gpt-token-tool .utility-actions .ant-btn {
+    width: 100%;
+    min-width: 0;
+    padding-inline: 8px;
+  }
+
+  .gpt-token-tool .ant-alert-message {
+    word-break: break-word;
+  }
+}

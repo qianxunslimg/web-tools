@@ -14,6 +14,7 @@ export type ToolkitTabKey =
   | "codec"
   | "color"
   | "text"
+  | "gpt-token"
   | "banyiping";
 export type OpsTabKey = "features" | "logs" | "table";
 

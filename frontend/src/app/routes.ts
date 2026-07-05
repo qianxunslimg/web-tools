@@ -16,6 +16,7 @@ const toolkitTabKeys: ToolkitTabKey[] = [
   "codec",
   "color",
   "text",
+  "gpt-token",
   "banyiping",
 ];
 
@@ -51,7 +52,7 @@ function withBasePath(pathname: string) {
 
 function buildBaseRoute(path: string, canonicalPath: string): RouteState {
   return {
-    page: "home",
+    page: "toolkit",
     toolkitTab: "image-editor",
     opsTab: "features",
     path,
@@ -70,7 +71,6 @@ export function buildOpsPath(tab: OpsTabKey) {
 export function buildPagePath(page: PageKey) {
   switch (page) {
     case "home":
-      return withBasePath("/");
     case "toolkit":
       return buildToolkitPath("image-editor");
     case "ops":
@@ -88,8 +88,9 @@ export function parseRoute(pathname: string): RouteState {
   switch (path) {
     case "/":
       return {
-        ...buildBaseRoute(originalPath, buildPagePath("home")),
-        page: "home",
+        ...buildBaseRoute(originalPath, buildToolkitPath("image-editor")),
+        page: "toolkit",
+        toolkitTab: "image-editor",
       };
     case "/toolkit":
       return {
@@ -155,7 +156,8 @@ export function parseRoute(pathname: string): RouteState {
   }
 
   return {
-    ...buildBaseRoute(originalPath, buildPagePath("home")),
-    page: "home",
+    ...buildBaseRoute(originalPath, buildToolkitPath("image-editor")),
+    page: "toolkit",
+    toolkitTab: "image-editor",
   };
 }
