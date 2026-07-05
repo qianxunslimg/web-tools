@@ -71,6 +71,7 @@ export function buildOpsPath(tab: OpsTabKey) {
 export function buildPagePath(page: PageKey) {
   switch (page) {
     case "home":
+      return withBasePath("/");
     case "toolkit":
       return buildToolkitPath("image-editor");
     case "ops":
@@ -88,8 +89,8 @@ export function parseRoute(pathname: string): RouteState {
   switch (path) {
     case "/":
       return {
-        ...buildBaseRoute(originalPath, buildToolkitPath("image-editor")),
-        page: "toolkit",
+        ...buildBaseRoute(originalPath, withBasePath("/")),
+        page: "home",
         toolkitTab: "image-editor",
       };
     case "/toolkit":

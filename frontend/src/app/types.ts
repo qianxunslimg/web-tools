@@ -31,6 +31,19 @@ export type SubNavItem<T extends string> = {
   path: string;
 };
 
+export type ToolDirectoryCategory = "图像" | "文档" | "开发" | "文本" | "时间" | "生活" | "转换";
+
+export type ToolDirectoryItem = {
+  key: ToolkitTabKey;
+  title: string;
+  description: string;
+  category: ToolDirectoryCategory;
+  path: string;
+  keywords: string[];
+  icon: ReactNode;
+  featured?: boolean;
+};
+
 export type RouteState = {
   page: PageKey;
   toolkitTab: ToolkitTabKey;

@@ -6,6 +6,7 @@ import App from "./App";
 import "./styles.css";
 import "./console-theme.css";
 import "./workbench-theme.css";
+import "./directory-home.css";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

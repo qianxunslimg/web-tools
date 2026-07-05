@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { OPS_TABS, SITE_NAME, TOOLKIT_TABS } from "./app/constants";
 import { buildPagePath, parseRoute } from "./app/routes";
 import type { RouteState } from "./app/types";
+import { HomePage } from "./features/home/HomePage";
 import { OpsPage } from "./features/ops/OpsPage";
 import { ToolkitPage } from "./features/toolkit/ToolkitPage";
 
@@ -69,7 +70,7 @@ export default function App() {
 
   useEffect(() => {
     const titleMap = {
-      home: toolkitTitleMap[route.toolkitTab],
+      home: `${SITE_NAME} | qxslimg`,
       toolkit: toolkitTitleMap[route.toolkitTab],
       ops: route.opsTab === "logs" ? `日志 | ${SITE_NAME}` : route.opsTab === "table" ? `数据库 | ${SITE_NAME}` : `控制台 | ${SITE_NAME}`,
     };
@@ -99,14 +100,23 @@ export default function App() {
   const activeLabel = route.page === "ops" ? activeOps?.label || "运维" : activeTool?.label || "工具";
   const centerTabs = route.page === "ops" ? OPS_TABS : TOOLKIT_TABS;
 
-  const pageContent = route.page === "ops" ? <OpsPage activeTab={route.opsTab} /> : <ToolkitPage activeTab={route.toolkitTab} />;
+  const pageContent =
+    route.page === "home" ? <HomePage /> : route.page === "ops" ? <OpsPage activeTab={route.opsTab} /> : <ToolkitPage activeTab={route.toolkitTab} />;
+
+  if (route.page === "home") {
+    return (
+      <ConfigProvider theme={antdTheme}>
+        <div className="app directory-app">{pageContent}</div>
+      </ConfigProvider>
+    );
+  }
 
   return (
     <ConfigProvider theme={antdTheme}>
       <div className="app">
         <header className="header workbench-header">
           <button type="button" className="console-brand" onClick={() => handleNavigate(buildPagePath("toolkit"))}>
-            <span className="header-logo">QX</span>
+            <span className="header-logo">wt</span>
             <span className="workbench-brand-copy">
               <strong>{SITE_NAME}</strong>
               <span>{activeLabel}</span>
